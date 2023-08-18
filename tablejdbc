@@ -1,0 +1,40 @@
+package com.charan;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+public class TableJdbc {
+	Connection conn;
+	Statement stat;
+	ArrayList<empTable> al = new ArrayList<>();
+
+	public ArrayList<empTable> jdbc() {
+		try {
+			Class.forName("org.postgresql.Driver");
+			conn = DriverManager.getConnection("jdbc:postgresql://192.168.110.48:5432/plf_training",
+					"plf_training_admin", "pff123");
+			stat = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			String query = "select * from empp_pp;";
+			ResultSet rs = stat.executeQuery(query);
+			while (rs.next()) {
+				int a = rs.getInt(1);
+				String b = rs.getString(2);
+				String c = rs.getString(3);
+				int d = rs.getInt(4);
+				empTable et = new empTable(a, b, c, d);
+				al.add(et);
+				System.out.println("id" + et.getId());
+			}
+			conn.close();
+
+		} catch (Exception e) {
+			System.out.println("jdbc" + e);
+		}
+		return al;
+
+	}
+
+}
